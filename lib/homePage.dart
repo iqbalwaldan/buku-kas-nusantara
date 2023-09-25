@@ -5,7 +5,8 @@ import 'package:buku_kas_nusantara/editUserPage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+  final int id_user;
+  const HomePage({Key key, @required this.id_user}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -16,19 +17,18 @@ class _HomePageState extends State<HomePage> {
   var outcome = 1500000;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: ListView(
-          children: [ Center(
+    return Scaffold(
+      body: ListView(
+        children: <Widget>[
+          Center(
               child: Container(
                   margin: const EdgeInsets.all(20),
                   child: Column(
                     children: <Widget>[
-                      const Text(
+                      Text(
                         "Rangkuman Bulan Ini",
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                                     size: 100,
                                     color: Colors.red,
                                   ),
-        
+
                                   Text("Pengeluaran",
                                       style: TextStyle(
                                         fontSize: 15,
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                     size: 100,
                                     color: Colors.blue,
                                   ),
-        
+
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -137,8 +137,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const EditUserPage())),
+                                      builder: (context) => EditUserPage(
+                                            id_user: widget.id_user,
+                                          ))),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -149,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                                     size: 100,
                                     color: Colors.blueGrey,
                                   ),
-        
+
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -163,13 +164,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                     
                     ],
                   ))),
-                  ],
-        ),
+        ],
       ),
     );
-    
   }
 }
