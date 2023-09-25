@@ -1,6 +1,6 @@
 class FlowModel {
-  int id, id_user;
-  String type, date, total, description, createdAt, updatedAt;
+  int id, id_user, total;
+  String type, date, description, createdAt, updatedAt;
 
   FlowModel(
       {this.id,

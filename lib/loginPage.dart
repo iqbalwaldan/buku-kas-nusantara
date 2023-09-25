@@ -99,18 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              // SizedBox(
-                              //   height: 20,
-                              // ),
-                              // Text("Login",
-                              //     style: TextStyle(
-                              //       color: Colors.blue,
-                              //       fontSize: 30,
-                              //       fontWeight: FontWeight.bold,
-                              //     )),
-                              // SizedBox(
-                              //   height: 40,
-                              // ),
                               TextFormField(
                                 controller: usernameController,
                                 validator: (value) {
@@ -119,9 +107,6 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                   return null;
                                 },
-                                // onChanged: (value) {
-                                //   setState(() {});
-                                // },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -142,9 +127,6 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                   return null;
                                 },
-                                // onChanged: (value) {
-                                //   setState(() {});
-                                // },
                                 obscureText: true,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(

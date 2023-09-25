@@ -1,9 +1,11 @@
+import 'package:buku_kas_nusantara/database_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddIncomePage extends StatefulWidget {
-  const AddIncomePage({Key key}) : super(key: key);
+  final int id_user;
+  const AddIncomePage({Key key, @required this.id_user}) : super(key: key);
 
   @override
   State<AddIncomePage> createState() => _AddIncomePageState();
@@ -12,7 +14,7 @@ class AddIncomePage extends StatefulWidget {
 class _AddIncomePageState extends State<AddIncomePage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController nominalController = TextEditingController();
-  TextEditingController detailController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TextField(
+                  TextFormField(
                     controller: dateController,
                     onChanged: (value) => setState(() => null),
                     readOnly: true,
@@ -69,9 +71,8 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       }
                     },
                   ),
-                  TextField(
+                  TextFormField(
                     controller: nominalController,
-                    onChanged: (value) => setState(() => null),
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -81,9 +82,8 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       labelText: 'Nominal',
                     ),
                   ),
-                  TextField(
-                    controller: detailController,
-                    onChanged: (value) => setState(() => null),
+                  TextFormField(
+                    controller: descriptionController,
                     decoration: InputDecoration(
                       labelText: 'Keterangan',
                     ),
@@ -102,7 +102,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                         onPressed: () => {
                               dateController.clear(),
                               nominalController.clear(),
-                              detailController.clear(),
+                              descriptionController.clear(),
                             },
                         child: const Text('Reset',
                             style: TextStyle(
@@ -119,7 +119,36 @@ class _AddIncomePageState extends State<AddIncomePage> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
-                        onPressed: () => null,
+                        onPressed: () async {
+                          if (dateController.text.isEmpty ||
+                              nominalController.text.isEmpty ||
+                              descriptionController.text.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text('Data tidak boleh kosong.'),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            DatabaseInstance().addIncome(
+                                widget.id_user,
+                                dateController.text,
+                                int.parse(nominalController.text),
+                                descriptionController.text,
+                                context);
+                          }
+                        },
                         child: const Text('Simpan',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w500))),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:buku_kas_nusantara/flow_model.dart';
 import 'package:buku_kas_nusantara/homePage.dart';
 import 'package:buku_kas_nusantara/loginPage.dart';
 import 'package:buku_kas_nusantara/user_model.dart';
@@ -28,8 +29,8 @@ class DatabaseInstance {
   final String _columnIdUserBank = "id_user";
   final String _columnTypeBank = "type";
   final String _columnDateBank = "date";
-  final String _columnTotalBank = "Total";
-  final String _columnDescriptionBank = "Description";
+  final String _columnTotalBank = "total";
+  final String _columnDescriptionBank = "description";
   final String _columnCreatedAtBank = "created_at";
   final String _columnUpdatedAtBank = "updated_at";
 
@@ -46,12 +47,14 @@ class DatabaseInstance {
   Future _initDatabase() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, _databaseName);
-    return openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
-    // return await openDatabase(
-    //   path + _databaseName,
-    //   version: _databaseVersion,
-    //   onCreate: _onCreate
-    // );
+    try {
+      _database = await openDatabase(path,
+          version: _databaseVersion, onCreate: _onCreate);
+      return _database;
+    } catch (e) {
+      print('Error saat membuka database: $e');
+      return null;
+    }
   }
 
   // Membuat Tabel
@@ -73,7 +76,7 @@ class DatabaseInstance {
       $_columnIdUserBank INTEGER, 
       $_columnTypeBank TEXT, 
       $_columnDateBank TEXT, 
-      $_columnTotalBank TEXT, 
+      $_columnTotalBank INTEGER, 
       $_columnDescriptionBank TEXT, 
       $_columnCreatedAtBank TEXT, 
       $_columnUpdatedAtBank TEXT,
@@ -96,6 +99,7 @@ class DatabaseInstance {
     if (maps.isEmpty) return null;
     return UserModel.fromJson(maps.first);
   }
+
   Future<UserModel> getUserById(int id) async {
     final db = await database;
     List<Map<String, dynamic>> maps = await db.query(
@@ -180,8 +184,8 @@ class DatabaseInstance {
     }
   }
 
-  Future<void> changePassword(int id, String password,
-      String newPassword, BuildContext context) async {
+  Future<void> changePassword(
+      int id, String password, String newPassword, BuildContext context) async {
     UserModel user = await DatabaseInstance().getUserById(id);
     if (user != null && user.password == password) {
       // Password lama sesuai, update password di objek user
@@ -222,48 +226,160 @@ class DatabaseInstance {
     }
   }
 
-  // Future<int> createBank(Bank bank) async {
-  //   final db = await database;
-  //   return await db.insert(_tableBank, bank.toJson());
-  // }
+  Future<int> createBank(FlowModel flow) async {
+    final db = await database;
+    return await db.insert(_tableBank, flow.toJson());
+  }
 
-  // Future<List<Bank>> getBankByIdUser(int id_user) async {
-  //   final db = await database;
-  //   List<Map<String, dynamic>> maps = await db.query(
-  //     _tableBank,
-  //     where: '$_columnIdUserBank = ?',
-  //     whereArgs: [id_user],
-  //   );
-  //   if (maps.isEmpty) return null;
-  //   return List.generate(maps.length, (i) {
-  //     return Bank(
-  //         id: maps[i]['id'],
-  //         id_user: maps[i]['id_user'],
-  //         type: maps[i]['type'],
-  //         date: maps[i]['date'],
-  //         total: maps[i]['total'],
-  //         description: maps[i]['description'],
-  //         createdAt: maps[i]['created_at'],
-  //         updatedAt: maps[i]['updated_at']);
-  //   });
-  // }
+  Future<void> addIncome(int id_user, String date, int total,
+      String description, BuildContext context) async {
+    FlowModel flow = FlowModel(
+      id_user: id_user,
+      type: 'income',
+      date: date,
+      total: total,
+      description: description,
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+    );
+    int result = await DatabaseInstance().createBank(flow);
+    if (result > 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(id_user: id_user)),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Gagal menambahkan. Silakan coba lagi.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
-  // Future<int> updateBank(Bank bank) async {
-  //   final db = await database;
-  //   return await db.update(
-  //     _tableBank,
-  //     bank.toJson(),
-  //     where: '$_columnIdBank = ?',
-  //     whereArgs: [bank.id],
-  //   );
-  // }
+  Future<void> addOutcome(int id_user, String date, int total,
+      String description, BuildContext context) async {
+    FlowModel flow = FlowModel(
+      id_user: id_user,
+      type: 'outcome',
+      date: date,
+      total: total,
+      description: description,
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+    );
+    int result = await DatabaseInstance().createBank(flow);
+    if (result > 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(id_user: id_user)),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Gagal menambahkan. Silakan coba lagi.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
-  // Future<int> deleteBank(int id) async {
-  //   final db = await database;
-  //   return await db.delete(
-  //     _tableBank,
-  //     where: '$_columnIdBank = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
+  Future<List<FlowModel>> all(int id_user) async {
+    final db = await database;
+    if (_database != null) {
+      final data = await db.query(
+            _tableBank,
+            where: '$_columnIdUserBank = ?',
+            whereArgs: [id_user],
+          ) ??
+          [];
+      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
+
+      // Memeriksa dan mengganti nilai null jika diperlukan
+      for (var flow in result) {
+        if (flow.total == null) {
+          flow.total = 0; // Ganti dengan nilai default atau nilai yang sesuai
+        }
+        if (flow.description == null) {
+          flow.description =
+              ""; // Ganti dengan nilai default atau nilai yang sesuai
+        }
+      }
+      print(result);
+      return result;
+    } else {
+      print('Database belum terbuka');
+      return [];
+    }
+  }
+
+  Future<int> totalIncome({int id_user}) async {
+  final db = await database;
+  int income = 0; // Inisialisasi dengan nilai 0
+
+  if (_database != null) {
+    final data = await db.query(
+          _tableBank,
+          where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+          whereArgs: [id_user, "income"],
+        ) ??
+        [];
+    List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
+
+    // Menjumlahkan total pendapatan
+    for (var flow in result) {
+      income += flow.total;
+    }
+
+    return income;
+  } else {
+    return income; // Return 0 jika database belum terbuka
+  }
+}
+  Future<int> totalOutcome({int id_user}) async {
+  final db = await database;
+  int outcome = 0; // Inisialisasi dengan nilai 0
+
+  if (_database != null) {
+    final data = await db.query(
+          _tableBank,
+          where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+          whereArgs: [id_user, "outcome"],
+        ) ??
+        [];
+    List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
+
+    // Menjumlahkan total pendapatan
+    for (var flow in result) {
+      outcome += flow.total;
+    }
+
+    return outcome;
+  } else {
+    return outcome; // Return 0 jika database belum terbuka
+  }
+}
 }

@@ -78,12 +78,32 @@ class _EditUserPageState extends State<EditUserPage> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            onPressed: () async => {
+                            onPressed: () async{
+                              if (passwordController.text.isEmpty ||
+                            newPasswordController.text.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Error'),
+                                content: Text('Data tidak boleh kosong.'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
                                   await DatabaseInstance().changePassword(
                                       widget.id_user,
                                       passwordController.text,
                                       newPasswordController.text,
-                                      context),
+                                      context);}
                                 },
                             child: const Text('Simpan',
                                 style: TextStyle(

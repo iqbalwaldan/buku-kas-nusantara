@@ -1,9 +1,11 @@
+import 'package:buku_kas_nusantara/database_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddOutcomePage extends StatefulWidget {
-  const AddOutcomePage({Key key}) : super(key: key);
+  final int id_user;
+  const AddOutcomePage({Key key, @required this.id_user}) : super(key: key);
 
   @override
   State<AddOutcomePage> createState() => _AddOutcomePageState();
@@ -12,7 +14,7 @@ class AddOutcomePage extends StatefulWidget {
 class _AddOutcomePageState extends State<AddOutcomePage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController nominalController = TextEditingController();
-  TextEditingController detailController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class _AddOutcomePageState extends State<AddOutcomePage> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TextField(
+                TextFormField(
                   controller: dateController,
                   onChanged: (value) => setState(() => null),
                   readOnly: true,
@@ -69,7 +71,7 @@ class _AddOutcomePageState extends State<AddOutcomePage> {
                     }
                   },
                 ),
-                TextField(
+                TextFormField(
                   controller: nominalController,
                   onChanged: (value) => setState(() => null),
                   keyboardType: TextInputType.number,
@@ -81,8 +83,8 @@ class _AddOutcomePageState extends State<AddOutcomePage> {
                     labelText: 'Nominal',
                   ),
                 ),
-                TextField(
-                  controller: detailController,
+                TextFormField(
+                  controller: descriptionController,
                   onChanged: (value) => setState(() => null),
                   decoration: InputDecoration(
                     labelText: 'Keterangan',
@@ -102,7 +104,7 @@ class _AddOutcomePageState extends State<AddOutcomePage> {
                       onPressed: () => {
                             dateController.clear(),
                             nominalController.clear(),
-                            detailController.clear(),
+                            descriptionController.clear(),
                           },
                       child: const Text('Reset',
                           style: TextStyle(
@@ -119,7 +121,36 @@ class _AddOutcomePageState extends State<AddOutcomePage> {
                           borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      onPressed: () => null,
+                      onPressed: () async {
+                        if (dateController.text.isEmpty ||
+                            nominalController.text.isEmpty ||
+                            descriptionController.text.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Error'),
+                                content: Text('Data tidak boleh kosong.'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          DatabaseInstance().addOutcome(
+                              widget.id_user,
+                              dateController.text,
+                              int.parse(nominalController.text),
+                              descriptionController.text,
+                              context);
+                        }
+                      },
                       child: const Text('Simpan',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w500))),

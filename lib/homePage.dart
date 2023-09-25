@@ -1,5 +1,6 @@
 import 'package:buku_kas_nusantara/addIncomePage.dart';
 import 'package:buku_kas_nusantara/addOutcomePage.dart';
+import 'package:buku_kas_nusantara/database_instance.dart';
 import 'package:buku_kas_nusantara/detailCashFlowPage.dart';
 import 'package:buku_kas_nusantara/editUserPage.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var income = 500000;
-  var outcome = 1500000;
+  Future<int> income;
+  Future<int> outcome;
+
+  @override
+  void initState() {
+    super.initState();
+    income = DatabaseInstance().totalIncome(id_user: widget.id_user);
+    outcome = DatabaseInstance().totalOutcome(id_user: widget.id_user);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,10 +42,49 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text("Pengeluaran: Rp. " + outcome.toString(),
-                          style: TextStyle(fontSize: 15, color: Colors.red)),
-                      Text("Pemasukan: Rp. " + income.toString(),
-                          style: TextStyle(fontSize: 15, color: Colors.green)),
+                      FutureBuilder<int>(
+                        future: income,
+                        builder: (context, incomeSnapshot) {
+                          if (incomeSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (incomeSnapshot.hasError) {
+                            return Text("Error: ${incomeSnapshot.error}");
+                          } else {
+                            return FutureBuilder<int>(
+                              future: outcome,
+                              builder: (context, outcomeSnapshot) {
+                                if (outcomeSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (outcomeSnapshot.hasError) {
+                                  return Text(
+                                      "Error: ${outcomeSnapshot.error}");
+                                } else {
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        "Pengeluaran: Rp. ${outcomeSnapshot.data}",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Pemasukan: Rp. ${incomeSnapshot.data}",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            );
+                          }
+                        },
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -54,8 +102,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddIncomePage())),
+                                      builder: (context) => AddIncomePage(
+                                            id_user: widget.id_user,
+                                          ))),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -80,8 +129,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddOutcomePage())),
+                                      builder: (context) => AddOutcomePage(
+                                            id_user: widget.id_user,
+                                          ))),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -107,8 +157,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DetailCashFlowPage())),
+                                      builder: (context) => DetailCashFlowPage(
+                                            id_user: widget.id_user,
+                                          ))),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[

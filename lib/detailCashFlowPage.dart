@@ -1,9 +1,12 @@
 import 'dart:math';
 
+import 'package:buku_kas_nusantara/database_instance.dart';
+import 'package:buku_kas_nusantara/flow_model.dart';
 import 'package:flutter/material.dart';
 
 class DetailCashFlowPage extends StatefulWidget {
-  const DetailCashFlowPage({Key key}) : super(key: key);
+  final int id_user;
+  const DetailCashFlowPage({Key key, @required this.id_user}) : super(key: key);
 
   @override
   State<DetailCashFlowPage> createState() => _DetailCashFlowPageState();
@@ -28,80 +31,36 @@ class _DetailCashFlowPageState extends State<DetailCashFlowPage> {
       ),
       body: Container(
           margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: ListView(
-            children: <Widget>[
-              cardCashFlow(
-                  Icons.arrow_forward,
-                  Colors.red.shade400,
-                  "-",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_back,
-                  Colors.green.shade400,
-                  "+",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_forward,
-                  Colors.red.shade400,
-                  "-",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_back,
-                  Colors.green.shade400,
-                  "+",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_forward,
-                  Colors.red.shade400,
-                  "-",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_back,
-                  Colors.green.shade400,
-                  "+",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_forward,
-                  Colors.red.shade400,
-                  "-",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_back,
-                  Colors.green.shade400,
-                  "+",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_forward,
-                  Colors.red.shade400,
-                  "-",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-              cardCashFlow(
-                  Icons.arrow_back,
-                  Colors.green.shade400,
-                  "+",
-                  "250000",
-                  "Pemasukan dari semua jenis usaha yang aku punya",
-                  "2021-03-16"),
-            ],
-          )),
+          child: FutureBuilder<List<FlowModel>>(
+  future: DatabaseInstance().all(widget.id_user),
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      if(snapshot.data.length == 0){
+        return Center(
+          child: Text('Data Tidak Ditemukan'),
+        );
+      }
+      return ListView.builder(
+        itemCount: snapshot.data.length,
+        itemBuilder: (context, index) {
+          // Menampilkan data dari snapshot ke dalam UI
+          return cardCashFlow(
+            snapshot.data[index].type == "income" ? Icons.arrow_back :Icons.arrow_forward,
+            snapshot.data[index].type == "income" ? Colors.green.shade400 :Colors.red.shade400,
+            snapshot.data[index].type == "income" ? "+" :"-",
+            snapshot.data[index].total.toString(),  
+            snapshot.data[index].description.toString(),  
+            snapshot.data[index].date.toString(),  
+          );
+        },
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(color: Colors.blue,),
+      );
+    }
+  },
+)),
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
