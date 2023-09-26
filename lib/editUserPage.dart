@@ -46,7 +46,6 @@ class _EditUserPageState extends State<EditUserPage> {
                             fontWeight: FontWeight.bold),
                       ),
                       TextField(
-                          // textAlign: TextAlign.center,
                           controller: passwordController,
                           onChanged: (value) {
                             setState(() => null);
@@ -57,7 +56,6 @@ class _EditUserPageState extends State<EditUserPage> {
                             prefixIcon: Icon(Icons.lock),
                           )),
                       TextField(
-                          // textAlign: TextAlign.center,
                           controller: newPasswordController,
                           onChanged: (value) {
                             setState(() => null);

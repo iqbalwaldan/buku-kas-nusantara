@@ -1,6 +1,5 @@
 import 'package:buku_kas_nusantara/database_instance.dart';
 import 'package:buku_kas_nusantara/loginPage.dart';
-import 'package:buku_kas_nusantara/user_model.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,16 +10,9 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // DatabaseInstance db = DatabaseInstance();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-
-  // @override
-  // void initState() {
-  //   db.database;
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +83,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
-                              // topLeft: Radius.circular(40),
                               topRight: Radius.circular(40))),
                       child: Padding(
                           padding: EdgeInsets.all(24),
@@ -99,18 +90,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              // SizedBox(
-                              //   height: 20,
-                              // ),
-                              // Text("Daftar",
-                              //     style: TextStyle(
-                              //       color: Colors.blue,
-                              //       fontSize: 30,
-                              //       fontWeight: FontWeight.bold,
-                              //     )),
-                              // SizedBox(
-                              //   height: 40,
-                              // ),
                               TextFormField(
                                 controller: nameController,
                                 validator: (value) {
@@ -119,9 +98,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                   }
                                   return null;
                                 },
-                                // onChanged: (value) {
-                                //   setState(() {});
-                                // },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -142,9 +118,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                   }
                                   return null;
                                 },
-                                // onChanged: (value) {
-                                //   setState(() {});
-                                // },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -165,9 +138,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                   }
                                   return null;
                                 },
-                                // onChanged: (value) {
-                                //   setState(() {});
-                                // },
                                 obscureText: true,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(

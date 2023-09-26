@@ -337,49 +337,54 @@ class DatabaseInstance {
   }
 
   Future<int> totalIncome({int id_user}) async {
-  final db = await database;
-  int income = 0; // Inisialisasi dengan nilai 0
+    final db = await database;
+    int income = 0; // Inisialisasi dengan nilai 0
 
-  if (_database != null) {
-    final data = await db.query(
-          _tableBank,
-          where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
-          whereArgs: [id_user, "income"],
-        ) ??
-        [];
-    List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
+    if (_database != null) {
+      final data = await db.query(
+            _tableBank,
+            where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+            whereArgs: [id_user, "income"],
+          ) ??
+          [];
+      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
 
-    // Menjumlahkan total pendapatan
-    for (var flow in result) {
-      income += flow.total;
+      // Menjumlahkan total pendapatan
+      for (var flow in result) {
+        income += flow.total;
+      }
+
+      return income;
+    } else {
+      return income; // Return 0 jika database belum terbuka
     }
-
-    return income;
-  } else {
-    return income; // Return 0 jika database belum terbuka
   }
-}
+
   Future<int> totalOutcome({int id_user}) async {
-  final db = await database;
-  int outcome = 0; // Inisialisasi dengan nilai 0
+    final db = await database;
+    int outcome = 0; // Inisialisasi dengan nilai 0
 
-  if (_database != null) {
-    final data = await db.query(
-          _tableBank,
-          where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
-          whereArgs: [id_user, "outcome"],
-        ) ??
-        [];
-    List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
+    if (_database != null) {
+      final data = await db.query(
+            _tableBank,
+            where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+            whereArgs: [id_user, "outcome"],
+          ) ??
+          [];
+      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
 
-    // Menjumlahkan total pendapatan
-    for (var flow in result) {
-      outcome += flow.total;
+      // Menjumlahkan total pendapatan
+      for (var flow in result) {
+        outcome += flow.total;
+      }
+
+      return outcome;
+    } else {
+      return outcome; // Return 0 jika database belum terbuka
     }
-
-    return outcome;
-  } else {
-    return outcome; // Return 0 jika database belum terbuka
   }
+  Future<String> getName({int id_user}) async {
+  UserModel user = await DatabaseInstance().getUserById(id_user);
+  return user.name;
 }
 }

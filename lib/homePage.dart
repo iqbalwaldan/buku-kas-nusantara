@@ -16,31 +16,56 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<int> income;
   Future<int> outcome;
+  Future<String> name;
 
   @override
   void initState() {
     super.initState();
     income = DatabaseInstance().totalIncome(id_user: widget.id_user);
     outcome = DatabaseInstance().totalOutcome(id_user: widget.id_user);
+    name = DatabaseInstance().getName(id_user: widget.id_user);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: FutureBuilder<String>(
+          future: name,
+          builder: (context, nameSnapshot) {
+            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (nameSnapshot.hasError) {
+              return Text("Error: ${nameSnapshot.error}");
+            } else {
+              return Text(
+                "Selamat datang, ${nameSnapshot.data}",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              );
+            }
+          },
+        ),
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+      ),
       body: ListView(
         children: <Widget>[
           Center(
               child: Container(
-                  margin: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child: Column(
                     children: <Widget>[
                       Text(
                         "Rangkuman Bulan Ini",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       FutureBuilder<int>(
                         future: income,
@@ -88,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: 20,
                       ),
-                      Image.asset('lib/images/chart.gif', height: 200),
+                      Image.asset('lib/images/chart.gif', height: 150),
                       GridView.count(
                         crossAxisCount: 2, // Jumlah kolom (2 kolom)
                         shrinkWrap: true,
@@ -108,8 +133,6 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  // Image.asset('lib/images/income.png',
-                                  //     height: 100),
                                   Icon(
                                     Icons.add_circle_outline_rounded,
                                     size: 100,
@@ -135,8 +158,6 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  // Image.asset('lib/images/outcome.png',
-                                  //     height: 100),
                                   Icon(
                                     Icons.remove_circle_outline_rounded,
                                     size: 100,
@@ -163,16 +184,10 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  // Image.asset('lib/images/cashFlow.png',
-                                  //     height: 80),
                                   Icon(
                                     Icons.swap_horizontal_circle_outlined,
                                     size: 100,
                                     color: Colors.blue,
-                                  ),
-
-                                  SizedBox(
-                                    height: 10,
                                   ),
                                   Text("Detail Cash Flow",
                                       style: TextStyle(
@@ -194,16 +209,10 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  // Image.asset('lib/images/setting.png',
-                                  //     height: 80),
                                   Icon(
                                     Icons.settings_outlined,
                                     size: 100,
                                     color: Colors.blueGrey,
-                                  ),
-
-                                  SizedBox(
-                                    height: 10,
                                   ),
                                   Text("Pengaturan",
                                       style: TextStyle(

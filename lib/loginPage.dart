@@ -1,7 +1,5 @@
 import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/homePage.dart';
 import 'package:buku_kas_nusantara/registerPage.dart';
-import 'package:buku_kas_nusantara/user_model.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,15 +10,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // DatabaseInstance db = DatabaseInstance();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-  // @override
-  // void initState() {
-  //   db.database;
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 60,
                               ),
                             ),
-                            // SizedBox(height: 10,),
                             Text("Buku Kas Nusantara",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -91,7 +81,6 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
-                              // topLeft: Radius.circular(40),
                               topRight: Radius.circular(40))),
                       child: Padding(
                           padding: EdgeInsets.all(24),
