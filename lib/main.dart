@@ -3,7 +3,8 @@ import 'package:buku_kas_nusantara/view/loginPage.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Pastikan Flutter sudah terinisialisasi
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Pastikan Flutter sudah terinisialisasi
 
   // Inisialisasi database
   await DatabaseInstance();

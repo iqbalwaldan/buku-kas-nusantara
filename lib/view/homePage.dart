@@ -31,84 +31,155 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: FutureBuilder<String>(
-          future: name,
-          builder: (context, nameSnapshot) {
-            if (nameSnapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (nameSnapshot.hasError) {
-              return Text("Error: ${nameSnapshot.error}");
-            } else {
-              return Text(
-                "Selamat datang, ${nameSnapshot.data}",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              );
-            }
-          },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(30),
+          ),
+        ),
+        title: Container(
+          alignment: Alignment.bottomLeft,
+          child: FutureBuilder<String>(
+            future: name,
+            builder: (context, nameSnapshot) {
+              if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (nameSnapshot.hasError) {
+                return Text("Error: ${nameSnapshot.error}");
+              } else {
+                return Text(
+                  "Selamat datang, ${nameSnapshot.data}",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                );
+              }
+            },
+          ),
         ),
         shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.blue.shade600,
       ),
       body: ListView(
         children: <Widget>[
           Center(
               child: Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                   child: Column(
                     children: <Widget>[
-                      Text(
-                        "Rangkuman Bulan Ini",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      FutureBuilder<int>(
-                        future: income,
-                        builder: (context, incomeSnapshot) {
-                          if (incomeSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (incomeSnapshot.hasError) {
-                            return Text("Error: ${incomeSnapshot.error}");
-                          } else {
-                            return FutureBuilder<int>(
-                              future: outcome,
-                              builder: (context, outcomeSnapshot) {
-                                if (outcomeSnapshot.connectionState ==
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10)),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "Rangkuman Bulan Ini",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            FutureBuilder<int>(
+                              future: income,
+                              builder: (context, incomeSnapshot) {
+                                if (incomeSnapshot.connectionState ==
                                     ConnectionState.waiting) {
                                   return CircularProgressIndicator();
-                                } else if (outcomeSnapshot.hasError) {
-                                  return Text(
-                                      "Error: ${outcomeSnapshot.error}");
+                                } else if (incomeSnapshot.hasError) {
+                                  return Text("Error: ${incomeSnapshot.error}");
                                 } else {
-                                  return Column(
-                                    children: [
-                                      Text(
-                                        "Pengeluaran: Rp. ${outcomeSnapshot.data}",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Pemasukan: Rp. ${incomeSnapshot.data}",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                    ],
+                                  return FutureBuilder<int>(
+                                    future: outcome,
+                                    builder: (context, outcomeSnapshot) {
+                                      if (outcomeSnapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator();
+                                      } else if (outcomeSnapshot.hasError) {
+                                        return Text(
+                                            "Error: ${outcomeSnapshot.error}");
+                                      } else {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 5),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Pengeluaran",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 2,
+                                                  ),
+                                                  Text(
+                                                    "Rp.${outcomeSnapshot.data}",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 5),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Pemasukan",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 2,
+                                                  ),
+                                                  Text(
+                                                    "Rp.${incomeSnapshot.data}",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
                                   );
                                 }
                               },
-                            );
-                          }
-                        },
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 20,
@@ -163,7 +234,6 @@ class _HomePageState extends State<HomePage> {
                                     size: 100,
                                     color: Colors.red,
                                   ),
-
                                   Text("Pengeluaran",
                                       style: TextStyle(
                                         fontSize: 15,

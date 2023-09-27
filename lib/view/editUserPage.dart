@@ -76,33 +76,34 @@ class _EditUserPageState extends State<EditUserPage> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            onPressed: () async{
+                            onPressed: () async {
                               if (passwordController.text.isEmpty ||
-                            newPasswordController.text.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('Error'),
-                                content: Text('Data tidak boleh kosong.'),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
+                                  newPasswordController.text.isEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text('Data tidak boleh kosong.'),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                await DatabaseInstance().changePassword(
+                                    widget.id_user,
+                                    passwordController.text,
+                                    newPasswordController.text,
+                                    context);
+                              }
                             },
-                          );
-                        } else {
-                                  await DatabaseInstance().changePassword(
-                                      widget.id_user,
-                                      passwordController.text,
-                                      newPasswordController.text,
-                                      context);}
-                                },
                             child: const Text('Simpan',
                                 style: TextStyle(
                                     fontSize: 18,
@@ -166,46 +167,51 @@ class _EditUserPageState extends State<EditUserPage> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           padding: EdgeInsets.all(10),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-                  Widget>[
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'lib/images/waldan.png',
-                  width: 150,
-                  height: 150,
-                )),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text(
-                  "About this App..",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Aplikasi ini dibuat oleh:",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Nama : Moh. Iqbal Waldan",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Nim: 2141764139",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Tanggal : 24 September 2023",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ],
-            )
-          ]),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      'lib/images/waldan.png',
+                      width: 150,
+                      height: 150,
+                    )),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "About this App..",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Aplikasi ini dibuat oleh:",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Nama : Moh. Iqbal Waldan",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Nim: 2141764139",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Tanggal : 24 September 2023",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )
+              ]),
         ),
       ),
     );

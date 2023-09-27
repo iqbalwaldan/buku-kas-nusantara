@@ -1,11 +1,10 @@
 class CashFlow {
-  int? _id; 
+  int? _id;
   late int idUser, jumlah;
   late String tipe, tanggal, keterangan, dibuat, diperbaharui;
 
   CashFlow(
-      {
-      required this.idUser,
+      {required this.idUser,
       required this.tipe,
       required this.tanggal,
       required this.jumlah,
@@ -13,7 +12,7 @@ class CashFlow {
       required this.dibuat,
       required this.diperbaharui});
 
-  CashFlow.fromMap(dynamic objek){
+  CashFlow.fromMap(dynamic objek) {
     _id = objek['id'];
     idUser = objek['id_user'];
     tipe = objek['type'];
@@ -23,7 +22,7 @@ class CashFlow {
     dibuat = objek['created_at'];
     diperbaharui = objek['updated_at'];
   }
-  
+
   int? get id => _id;
   int get id_user => idUser;
   String get type => tipe;
@@ -33,7 +32,7 @@ class CashFlow {
   String get createdAt => dibuat;
   String get updatedAt => diperbaharui;
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     map['id'] = _id;
     map['id_user'] = idUser;

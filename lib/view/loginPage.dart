@@ -80,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(40))),
+                          borderRadius:
+                              BorderRadius.only(topRight: Radius.circular(40))),
                       child: Padding(
                           padding: EdgeInsets.all(24),
                           child: Column(

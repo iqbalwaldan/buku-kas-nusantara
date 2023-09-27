@@ -9,7 +9,7 @@ class User {
       required this.dibuat,
       required this.diperbaharui});
 
-  User.fromMap(dynamic objek){
+  User.fromMap(dynamic objek) {
     _id = objek['id'];
     namaUser = objek['username'];
     kataSandi = objek['password'];
@@ -25,7 +25,7 @@ class User {
   String get createdAt => dibuat;
   String get updatedAt => diperbaharui;
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     map['id'] = _id;
     map['username'] = namaUser;
