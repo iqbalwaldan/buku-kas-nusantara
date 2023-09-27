@@ -1,10 +1,10 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/loginPage.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/view/loginPage.dart';
 import 'package:flutter/material.dart';
 
 class EditUserPage extends StatefulWidget {
   final int id_user;
-  const EditUserPage({Key key, @required this.id_user}) : super(key: key);
+  const EditUserPage({Key? key, required this.id_user}) : super(key: key);
 
   @override
   State<EditUserPage> createState() => _EditUserPageState();

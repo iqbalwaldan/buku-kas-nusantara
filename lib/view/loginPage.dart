@@ -1,9 +1,9 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/registerPage.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/view/registerPage.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -24,8 +24,8 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blue[800],
-                    Colors.blue[600],
+                    Colors.blue.shade800,
+                    Colors.blue.shade600,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.centerRight,
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextFormField(
                                 controller: usernameController,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Username tidak boleh kosong';
                                   }
                                   return null;
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextFormField(
                                 controller: passwordController,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Password tidak boleh kosong';
                                   }
                                   return null;
@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const RegisterPage()));
+                                                    RegisterPage()));
                                       },
                                       child: Text("Daftar",
                                           style: TextStyle(

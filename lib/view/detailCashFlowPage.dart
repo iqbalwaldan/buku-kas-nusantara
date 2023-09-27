@@ -1,10 +1,10 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/flow_model.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/model/CashFlow.dart';
 import 'package:flutter/material.dart';
 
 class DetailCashFlowPage extends StatefulWidget {
   final int id_user;
-  const DetailCashFlowPage({Key key, @required this.id_user}) : super(key: key);
+  const DetailCashFlowPage({Key? key, required this.id_user}) : super(key: key);
 
   @override
   State<DetailCashFlowPage> createState() => _DetailCashFlowPageState();
@@ -29,26 +29,26 @@ class _DetailCashFlowPageState extends State<DetailCashFlowPage> {
       ),
       body: Container(
           margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: FutureBuilder<List<FlowModel>>(
+          child: FutureBuilder<List<CashFlow>>(
   future: DatabaseInstance().all(widget.id_user),
   builder: (context, snapshot) {
     if (snapshot.hasData) {
-      if(snapshot.data.length == 0){
+      if(snapshot.data?.length == 0){
         return Center(
           child: Text('Data Tidak Ditemukan'),
         );
       }
       return ListView.builder(
-        itemCount: snapshot.data.length,
+        itemCount: snapshot.data?.length,
         itemBuilder: (context, index) {
           // Menampilkan data dari snapshot ke dalam UI
           return cardCashFlow(
-            snapshot.data[index].type == "income" ? Icons.arrow_back :Icons.arrow_forward,
-            snapshot.data[index].type == "income" ? Colors.green.shade400 :Colors.red.shade400,
-            snapshot.data[index].type == "income" ? "+" :"-",
-            snapshot.data[index].total.toString(),  
-            snapshot.data[index].description.toString(),  
-            snapshot.data[index].date.toString(),  
+            snapshot.data?[index].type == "income" ? Icons.arrow_back :Icons.arrow_forward,
+            snapshot.data?[index].type == "income" ? Colors.green.shade400 :Colors.red.shade400,
+            snapshot.data?[index].type == "income" ? "+" :"-",
+            snapshot.data![index].total.toString(),  
+            snapshot.data![index].description.toString(),  
+            snapshot.data![index].date.toString(),  
           );
         },
       );

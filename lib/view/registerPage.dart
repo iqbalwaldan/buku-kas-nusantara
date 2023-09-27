@@ -1,9 +1,9 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/loginPage.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/view/loginPage.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key key}) : super(key: key);
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -25,8 +25,8 @@ class _RegisterPageState extends State<RegisterPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blue[800],
-                    Colors.blue[600],
+                    Colors.blue.shade800,
+                    Colors.blue.shade600,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.centerRight,
@@ -113,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               TextFormField(
                                 controller: usernameController,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Username tidak boleh kosong';
                                   }
                                   return null;
@@ -133,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               TextFormField(
                                 controller: passwordController,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Password tidak boleh kosong';
                                   }
                                   return null;

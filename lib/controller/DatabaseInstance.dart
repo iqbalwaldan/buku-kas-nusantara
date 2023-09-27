@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:buku_kas_nusantara/flow_model.dart';
-import 'package:buku_kas_nusantara/homePage.dart';
-import 'package:buku_kas_nusantara/loginPage.dart';
-import 'package:buku_kas_nusantara/user_model.dart';
+import 'package:buku_kas_nusantara/view/homePage.dart';
+import 'package:buku_kas_nusantara/view/loginPage.dart';
+import 'package:buku_kas_nusantara/model/CashFlow.dart';
+import 'package:buku_kas_nusantara/model/User.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,24 +23,24 @@ class DatabaseInstance {
   final String _columnCreatedAtUser = "created_at";
   final String _columnUpdatedAtUser = "updated_at";
 
-  // Database Bank
-  final String _tableBank = "user_Bank";
-  final String _columnIdBank = "id";
-  final String _columnIdUserBank = "id_user";
-  final String _columnTypeBank = "type";
-  final String _columnDateBank = "date";
-  final String _columnTotalBank = "total";
-  final String _columnDescriptionBank = "description";
-  final String _columnCreatedAtBank = "created_at";
-  final String _columnUpdatedAtBank = "updated_at";
+  // Database CashFlow
+  final String _tableCashFlow = "user_CashFlow";
+  final String _columnIdCashFlow = "id";
+  final String _columnIdUserCashFlow = "id_user";
+  final String _columnTypeCashFlow = "type";
+  final String _columnDateCashFlow = "date";
+  final String _columnTotalCashFlow = "total";
+  final String _columnDescriptionCashFlow = "description";
+  final String _columnCreatedAtCashFlow = "created_at";
+  final String _columnUpdatedAtCashFlow = "updated_at";
 
-  Database _database;
+  Database? _database;
   // Cek Apakah Database Sudah Ada
   Future<Database> get database async {
-    if (_database != null) return _database;
+    if (_database != null) return _database!;
     // Create Database
     _database = await _initDatabase();
-    return _database;
+    return _database!;
   }
 
   // Mencari Database Di Directory
@@ -61,7 +61,7 @@ class DatabaseInstance {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
     CREATE TABLE $_tableUser (
-      $_columnIdUser INTEGER PRIMARY KEY, 
+      $_columnIdUser INTEGER PRIMARY KEY AUTOINCREMENT, 
       $_columnUsername TEXT, 
       $_columnPassword TEXT, 
       $_columnName TEXT, 
@@ -71,25 +71,27 @@ class DatabaseInstance {
       ''');
 
     await db.execute('''
-    CREATE TABLE $_tableBank (
-      $_columnIdBank INTEGER PRIMARY KEY, 
-      $_columnIdUserBank INTEGER, 
-      $_columnTypeBank TEXT, 
-      $_columnDateBank TEXT, 
-      $_columnTotalBank INTEGER, 
-      $_columnDescriptionBank TEXT, 
-      $_columnCreatedAtBank TEXT, 
-      $_columnUpdatedAtBank TEXT,
-      FOREIGN KEY ($_columnIdUserBank) REFERENCES $_tableUser ($_columnIdUser))
+    CREATE TABLE $_tableCashFlow (
+      $_columnIdCashFlow INTEGER PRIMARY KEY AUTOINCREMENT, 
+      $_columnIdUserCashFlow INTEGER, 
+      $_columnTypeCashFlow TEXT, 
+      $_columnDateCashFlow TEXT, 
+      $_columnTotalCashFlow INTEGER, 
+      $_columnDescriptionCashFlow TEXT, 
+      $_columnCreatedAtCashFlow TEXT, 
+      $_columnUpdatedAtCashFlow TEXT,
+      FOREIGN KEY ($_columnIdUserCashFlow) REFERENCES $_tableUser ($_columnIdUser))
       ''');
   }
 
-  Future<int> createUser(UserModel user) async {
+  // Insert Database
+  Future<int> createUser(User user) async {
     final db = await database;
-    return await db.insert(_tableUser, user.toJson());
+    return await db.insert(_tableUser, user.toMap());
   }
 
-  Future<UserModel> getUserByUsername(String username) async {
+  // Mencari User Berdasarkan Username
+  Future<User?> getUserByUsername(String username) async {
     final db = await database;
     List<Map<String, dynamic>> maps = await db.query(
       _tableUser,
@@ -97,10 +99,11 @@ class DatabaseInstance {
       whereArgs: [username],
     );
     if (maps.isEmpty) return null;
-    return UserModel.fromJson(maps.first);
+    return User.fromMap(maps.first);
   }
 
-  Future<UserModel> getUserById(int id) async {
+  // Mencari User Berdasarkan ID
+  Future<User?> getUserById(int id) async {
     final db = await database;
     List<Map<String, dynamic>> maps = await db.query(
       _tableUser,
@@ -108,20 +111,20 @@ class DatabaseInstance {
       whereArgs: [id],
     );
     if (maps.isEmpty) return null;
-    return UserModel.fromJson(maps.first);
+    return User.fromMap(maps.first);
   }
 
+  // Login
   Future<void> login(
       String username, String password, BuildContext context) async {
-    UserModel user = await DatabaseInstance().getUserByUsername(username);
-
+    User? user = await DatabaseInstance().getUserByUsername(username);
     if (user != null && user.password == password) {
       // Login berhasil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => HomePage(
-                  id_user: user.id,
+                  id_user: user.id!,
                 )),
       );
     } else {
@@ -146,14 +149,15 @@ class DatabaseInstance {
     }
   }
 
+  // Register
   Future<void> register(String username, String password, String name,
       BuildContext context) async {
-    UserModel user = UserModel(
-      username: username,
-      password: password,
-      name: name,
-      createdAt: DateTime.now().toString(),
-      updatedAt: DateTime.now().toString(),
+    User? user = User(
+      namaUser: username,
+      kataSandi: password,
+      nama: name,
+      dibuat: DateTime.now().toString(),
+      diperbaharui: DateTime.now().toString(),
     );
     int result = await DatabaseInstance().createUser(user);
     if (result > 0) {
@@ -184,22 +188,24 @@ class DatabaseInstance {
     }
   }
 
+  // Ubah Password
   Future<void> changePassword(
       int id, String password, String newPassword, BuildContext context) async {
-    UserModel user = await DatabaseInstance().getUserById(id);
+    User? user = await DatabaseInstance().getUserById(id);
     if (user != null && user.password == password) {
       // Password lama sesuai, update password di objek user
-      user.password = newPassword;
-      user.createdAt = DateTime.now().toString();
+      user.kataSandi = newPassword;
+      user.dibuat = DateTime.now().toString();
 
       // Lakukan UPDATE ke database
       final db = await DatabaseInstance().database;
       await db.update(
         DatabaseInstance()._tableUser, // Nama tabel yang sesuai
-        user.toJson(), // Data yang diperbarui
+        user.toMap(), // Data yang diperbarui
         where: '${DatabaseInstance()._columnIdUser} = ?', // Kriteria WHERE
         whereArgs: [id], // Parameter WHERE
       );
+      // Kembali ke halaman login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -226,29 +232,35 @@ class DatabaseInstance {
     }
   }
 
-  Future<int> createBank(FlowModel flow) async {
+  // Insert Database CashFlow
+  Future<int?> createCashFlow(CashFlow flow) async {
     final db = await database;
-    return await db.insert(_tableBank, flow.toJson());
+    return await db.insert(_tableCashFlow, flow.toMap());
   }
 
+  // Tambah Pendapatan
   Future<void> addIncome(int id_user, String date, int total,
       String description, BuildContext context) async {
-    FlowModel flow = FlowModel(
-      id_user: id_user,
-      type: 'income',
-      date: date,
-      total: total,
-      description: description,
-      createdAt: DateTime.now().toString(),
-      updatedAt: DateTime.now().toString(),
+    // Buat objek CashFlow
+    CashFlow? flow = CashFlow(
+      idUser: id_user,
+      tipe: 'income',
+      tanggal: date,
+      jumlah: total,
+      keterangan: description,
+      dibuat: DateTime.now().toString(),
+      diperbaharui: DateTime.now().toString(),
     );
-    int result = await DatabaseInstance().createBank(flow);
-    if (result > 0) {
+    // Insert ke database
+    int? result = await DatabaseInstance().createCashFlow(flow);
+    if (result! > 0) {
+      // Tambah pendapatan berhasil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage(id_user: id_user)),
       );
     } else {
+      // Gagal menambahkan pendapatan
       showDialog(
         context: context,
         builder: (context) {
@@ -269,24 +281,29 @@ class DatabaseInstance {
     }
   }
 
+  // Tambah Pengeluaran
   Future<void> addOutcome(int id_user, String date, int total,
       String description, BuildContext context) async {
-    FlowModel flow = FlowModel(
-      id_user: id_user,
-      type: 'outcome',
-      date: date,
-      total: total,
-      description: description,
-      createdAt: DateTime.now().toString(),
-      updatedAt: DateTime.now().toString(),
+    // Buat objek CashFlow
+    CashFlow flow = CashFlow(
+      idUser: id_user,
+      tipe: 'outcome',
+      tanggal: date,
+      jumlah: total,
+      keterangan: description,
+      dibuat: DateTime.now().toString(),
+      diperbaharui: DateTime.now().toString(),
     );
-    int result = await DatabaseInstance().createBank(flow);
-    if (result > 0) {
+    // Insert ke database
+    int? result = await DatabaseInstance().createCashFlow(flow);
+    if (result! > 0) {
+      // Tambah pengeluaran berhasil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage(id_user: id_user)),
       );
     } else {
+      // Gagal menambahkan pengeluaran
       showDialog(
         context: context,
         builder: (context) {
@@ -307,24 +324,25 @@ class DatabaseInstance {
     }
   }
 
-  Future<List<FlowModel>> all(int id_user) async {
+  // Mengambil semua data CashFlow User Login
+  Future<List<CashFlow>> all(int id_user) async {
     final db = await database;
+    // cek apakah database sudah terbuka
     if (_database != null) {
       final data = await db.query(
-            _tableBank,
-            where: '$_columnIdUserBank = ?',
+            _tableCashFlow,
+            where: '$_columnIdUserCashFlow = ?',
             whereArgs: [id_user],
           ) ??
           [];
-      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
-
+      List<CashFlow> result = data.map((e) => CashFlow.fromMap(e)).toList();
       // Memeriksa dan mengganti nilai null jika diperlukan
       for (var flow in result) {
-        if (flow.total == null) {
-          flow.total = 0; // Ganti dengan nilai default atau nilai yang sesuai
+        if (flow.jumlah == null) {
+          flow.jumlah = 0; // Ganti dengan nilai default atau nilai yang sesuai
         }
-        if (flow.description == null) {
-          flow.description =
+        if (flow.keterangan == null) {
+          flow.keterangan =
               ""; // Ganti dengan nilai default atau nilai yang sesuai
         }
       }
@@ -336,55 +354,55 @@ class DatabaseInstance {
     }
   }
 
-  Future<int> totalIncome({int id_user}) async {
+  // Menghitung total pendapatan
+  Future<int> totalIncome({required int id_user}) async {
+    // cek apakah database sudah terbuka
     final db = await database;
     int income = 0; // Inisialisasi dengan nilai 0
-
     if (_database != null) {
       final data = await db.query(
-            _tableBank,
-            where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+            _tableCashFlow,
+            where: '$_columnIdUserCashFlow = ? AND $_columnTypeCashFlow = ?',
             whereArgs: [id_user, "income"],
           ) ??
           [];
-      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
-
+      List<CashFlow> result = data.map((e) => CashFlow.fromMap(e)).toList();
       // Menjumlahkan total pendapatan
       for (var flow in result) {
         income += flow.total;
       }
-
       return income;
     } else {
       return income; // Return 0 jika database belum terbuka
     }
   }
 
-  Future<int> totalOutcome({int id_user}) async {
+  // Menghitung total pengeluaran
+  Future<int> totalOutcome({required int id_user}) async {
+    // cek apakah database sudah terbuka
     final db = await database;
     int outcome = 0; // Inisialisasi dengan nilai 0
-
     if (_database != null) {
       final data = await db.query(
-            _tableBank,
-            where: '$_columnIdUserBank = ? AND $_columnTypeBank = ?',
+            _tableCashFlow,
+            where: '$_columnIdUserCashFlow = ? AND $_columnTypeCashFlow = ?',
             whereArgs: [id_user, "outcome"],
           ) ??
           [];
-      List<FlowModel> result = data.map((e) => FlowModel.fromJson(e)).toList();
-
+      List<CashFlow> result = data.map((e) => CashFlow.fromMap(e)).toList();
       // Menjumlahkan total pendapatan
       for (var flow in result) {
         outcome += flow.total;
       }
-
       return outcome;
     } else {
       return outcome; // Return 0 jika database belum terbuka
     }
   }
-  Future<String> getName({int id_user}) async {
-  UserModel user = await DatabaseInstance().getUserById(id_user);
-  return user.name;
-}
+
+  // Mengambil data nama user
+  Future<String> getName({required int id_user}) async {
+    User? user = await DatabaseInstance().getUserById(id_user);
+    return user!.name;
+  }
 }

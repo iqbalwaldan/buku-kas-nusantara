@@ -1,22 +1,22 @@
-import 'package:buku_kas_nusantara/addIncomePage.dart';
-import 'package:buku_kas_nusantara/addOutcomePage.dart';
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/detailCashFlowPage.dart';
-import 'package:buku_kas_nusantara/editUserPage.dart';
+import 'package:buku_kas_nusantara/view/addIncomePage.dart';
+import 'package:buku_kas_nusantara/view/addOutcomePage.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/view/detailCashFlowPage.dart';
+import 'package:buku_kas_nusantara/view/editUserPage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   final int id_user;
-  const HomePage({Key key, @required this.id_user}) : super(key: key);
+  const HomePage({Key? key, required this.id_user}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<int> income;
-  Future<int> outcome;
-  Future<String> name;
+  late Future<int> income;
+  late Future<int> outcome;
+  late Future<String> name;
 
   @override
   void initState() {

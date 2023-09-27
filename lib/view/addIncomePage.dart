@@ -1,11 +1,11 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddIncomePage extends StatefulWidget {
   final int id_user;
-  const AddIncomePage({Key key, @required this.id_user}) : super(key: key);
+  const AddIncomePage({Key? key, required this.id_user}) : super(key: key);
 
   @override
   State<AddIncomePage> createState() => _AddIncomePageState();
@@ -46,7 +46,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       labelText: 'Tanggal',
                     ),
                     onTap: () async {
-                      DateTime pickedDate = await showDatePicker(
+                      DateTime? pickedDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(

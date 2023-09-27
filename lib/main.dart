@@ -1,5 +1,5 @@
-import 'package:buku_kas_nusantara/database_instance.dart';
-import 'package:buku_kas_nusantara/loginPage.dart';
+import 'package:buku_kas_nusantara/controller/DatabaseInstance.dart';
+import 'package:buku_kas_nusantara/view/loginPage.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
@@ -12,7 +12,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
